@@ -1,12 +1,18 @@
+import { useLayoutEffect, useRef } from "react";
+
 import {
     ArrowDown,
     ArrowUpRight,
     Sparkles,
 } from "lucide-react";
 
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
 import Navbar from "../components/Navbar";
-import JewelryScene from "../components/JewelryScene";
 import ProductCard from "../components/ProductCard";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const products = [
     {
@@ -33,6 +39,86 @@ const products = [
 ];
 
 export default function Home() {
+
+    const heroSectionRef = useRef(null);
+    const heroPinRef = useRef(null);
+    const heroPanelRef = useRef(null);
+    const heroVideoRef = useRef(null);
+    const heroContentRef = useRef(null);
+    const heroScrollRef = useRef(null);
+
+    useLayoutEffect(() => {
+        const ctx = gsap.context(() => {
+            const timeline = gsap.timeline({
+                scrollTrigger: {
+                    trigger: heroSectionRef.current,
+
+                    // Start when hero reaches viewport top
+                    start: "top top",
+
+                    // Hero animation continues while scrolling through section
+                    end: "bottom bottom",
+
+                    // Pin the wrapper, NOT the element being transformed
+                    pin: heroPinRef.current,
+
+                    // Makes animation follow scrolling smoothly
+                    scrub: 1.2,
+
+                    // Prevents pinning delay on fast scrolling
+                    anticipatePin: 1,
+
+                    invalidateOnRefresh: true,
+                },
+            });
+
+            timeline
+                // Main hero shrink
+                .to(
+                    heroPanelRef.current,
+                    {
+                        scale: 0.84,
+                        borderRadius: "0 0 42px 42px",
+                        ease: "none",
+                    },
+                    0
+                )
+
+                // Subtle cinematic zoom in the video
+                .to(
+                    heroVideoRef.current,
+                    {
+                        scale: 1.12,
+                        ease: "none",
+                    },
+                    0
+                )
+
+                // Move/fade content as hero shrinks
+                .to(
+                    heroContentRef.current,
+                    {
+                        y: -40,
+                        opacity: 0.25,
+                        ease: "none",
+                    },
+                    0
+                )
+
+                // Hide scroll indicator
+                .to(
+                    heroScrollRef.current,
+                    {
+                        opacity: 0,
+                        ease: "none",
+                    },
+                    0
+                );
+        }, heroSectionRef);
+
+        return () => ctx.revert();
+    }, []);
+
     return (
         <main className="bg-[#090909] text-white">
 
@@ -40,81 +126,142 @@ export default function Home() {
 
             {/* ================= HERO ================= */}
 
-            <section className="relative min-h-screen overflow-hidden">
 
-                {/* Background */}
-                <div className="absolute inset-0">
-                    <img
-                        src="https://images.unsplash.com/photo-1617038260897-41a1f14a8ca0?auto=format&fit=crop&w=2200&q=90"
-                        alt=""
-                        className="h-full w-full object-cover opacity-30"
-                    />
 
-                    <div className="absolute inset-0 bg-gradient-to-r from-black via-black/75 to-black/30" />
+            <section
+                ref={heroSectionRef}
+                className="relative h-[175vh] bg-[#f3efe7]"
+            >
+                {/* Pinned viewport */}
+                <div
+                    ref={heroPinRef}
+                    className="relative flex h-screen w-full items-center justify-center"
+                >
+                    {/* Animated shrinking panel */}
+                    <div
+                        ref={heroPanelRef}
+                        className="relative h-full w-full overflow-hidden bg-black"
+                    >
 
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#090909] via-transparent to-black/40" />
-                </div>
+                        {/* ================= BACKGROUND VIDEO ================= */}
 
-                {/* 3D */}
-                <div className="absolute right-[-12%] top-[12%] h-[75vh] w-[65vw] md:right-[-5%] md:w-[58vw] lg:right-0 lg:w-[50vw] xl:w-[45vw]">
-                    <JewelryScene />
-                </div>
+                        <div className="absolute inset-0">
 
-                {/* Hero Content */}
-                <div className="relative z-10 mx-auto flex min-h-screen max-w-[1500px] items-end px-6 pb-20 md:px-10 md:pb-28 lg:px-16 xl:px-24">
-
-                    <div className="max-w-3xl">
-
-                        <div className="mb-8 flex items-center gap-4">
-                            <div className="h-px w-12 bg-[#c8a96b]" />
-
-                            <span className="text-[10px] uppercase tracking-[0.45em] text-[#d6bb7d]">
-                                The New Collection · 2026
-                            </span>
-                        </div>
-
-                        <h1 className="font-serif text-[18vw] font-light leading-[0.78] tracking-[-0.06em] md:text-[9rem] lg:text-[10rem] xl:text-[11rem]">
-                            Made
-                            <br />
-
-                            <span className="ml-[8vw] italic text-[#d7bc7b] md:ml-28">
-                                Eternal.
-                            </span>
-                        </h1>
-
-                        <p className="mt-10 max-w-md text-sm font-light leading-7 text-white/60 md:text-base lg:max-w-lg lg:text-lg">
-                            Sculptural forms, exceptional stones and generations
-                            of craftsmanship. Jewellery created not for a moment,
-                            but for everything that follows.
-                        </p>
-
-                        <div className="mt-10 flex items-center gap-8">
-                            <button className="group flex items-center gap-5 border border-[#c8a96b] px-7 py-4 text-[10px] uppercase tracking-[0.3em] transition hover:bg-[#c8a96b] hover:text-black">
-                                Explore Collection
-
-                                <ArrowUpRight
-                                    size={15}
-                                    className="transition-transform group-hover:translate-x-1 group-hover:-translate-y-1"
+                            <video
+                                ref={heroVideoRef}
+                                autoPlay
+                                loop
+                                muted
+                                playsInline
+                                preload="auto"
+                                className="h-full w-full object-cover"
+                            >
+                                <source
+                                    src="/hero-vid.mp4"
+                                    type="video/mp4"
                                 />
-                            </button>
+                            </video>
 
-                            <button className="hidden text-[10px] uppercase tracking-[0.3em] text-white/50 transition hover:text-white md:block lg:text-[12px]">
-                                Discover Our Story
-                            </button>
+                            {/* Dark cinematic overlay */}
+                            <div className="absolute inset-0 bg-black/45" />
+
+                            {/* Left gradient */}
+                            <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/55 to-black/10" />
+
+                            {/* Bottom fade */}
+                            <div className="absolute inset-0 bg-gradient-to-t from-[#090909] via-transparent to-black/20" />
+
                         </div>
+
+
+                        {/* ================= HERO CONTENT ================= */}
+
+                        <div
+                            ref={heroContentRef}
+                            className="relative z-10 mx-auto flex min-h-screen max-w-[1500px] items-end px-6 pb-20 md:px-10 md:pb-28 lg:px-16 xl:px-24"
+                        >
+
+                            <div className="max-w-3xl">
+
+                                <div className="mb-8 flex items-center gap-4">
+
+                                    <div className="h-px w-12 bg-[#c8a96b]" />
+
+                                    <span className="text-[10px] uppercase tracking-[0.45em] text-[#d6bb7d]">
+                                        The New Collection · 2026
+                                    </span>
+
+                                </div>
+
+
+                                <h1 className="font-serif text-[18vw] font-light leading-[0.78] tracking-[-0.06em] md:text-[9rem] lg:text-[10rem] xl:text-[11rem]">
+
+                                    Made
+
+                                    <br />
+
+                                    <span className="ml-[8vw] italic text-[#d7bc7b] md:ml-28">
+                                        Eternal.
+                                    </span>
+
+                                </h1>
+
+
+                                <p className="mt-10 max-w-md text-sm font-light leading-7 text-white/70 md:text-base lg:max-w-lg lg:text-lg">
+
+                                    Sculptural forms, exceptional stones and generations
+                                    of craftsmanship. Jewellery created not for a moment,
+                                    but for everything that follows.
+
+                                </p>
+
+
+                                <div className="mt-10 flex items-center gap-8">
+
+                                    <button className="group flex items-center gap-5 border border-[#c8a96b] px-7 py-4 text-[10px] uppercase tracking-[0.3em] transition hover:bg-[#c8a96b] hover:text-black">
+
+                                        Explore Collection
+
+                                        <ArrowUpRight
+                                            size={15}
+                                            className="transition-transform group-hover:translate-x-1 group-hover:-translate-y-1"
+                                        />
+
+                                    </button>
+
+
+                                    <button className="hidden text-[10px] uppercase tracking-[0.3em] text-white/60 transition hover:text-white md:block lg:text-[12px]">
+
+                                        Discover Our Story
+
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        {/* ================= SCROLL INDICATOR ================= */}
+
+                        <div
+                            ref={heroScrollRef}
+                            className="absolute bottom-8 right-8 z-20 hidden items-center gap-3 md:flex lg:bottom-12 lg:right-12"
+                        >
+
+                            <span className="text-[9px] uppercase tracking-[0.3em] text-white/40">
+                                Scroll to explore
+                            </span>
+
+                            <ArrowDown
+                                size={14}
+                                className="animate-bounce text-[#c8a96b]"
+                            />
+
+                        </div>
+
                     </div>
-                </div>
-
-                {/* Scroll */}
-                <div className="absolute bottom-8 right-8 hidden items-center gap-3 md:flex lg:bottom-12 lg:right-12">
-                    <span className="text-[9px] uppercase tracking-[0.3em] text-white/40">
-                        Scroll to explore
-                    </span>
-
-                    <ArrowDown
-                        size={14}
-                        className="animate-bounce text-[#c8a96b]"
-                    />
                 </div>
             </section>
 
@@ -193,7 +340,7 @@ export default function Home() {
             <section className="relative min-h-[85vh] overflow-hidden lg:min-h-screen">
 
                 <img
-                    src="https://images.unsplash.com/photo-1598560912005-59a0f8a859e2?auto=format&fit=crop&w=2200&q=90"
+                    src="https://plus.unsplash.com/premium_photo-1661645433820-24c8604e4db5?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                     alt="Jewellery craftsmanship"
                     className="absolute inset-0 h-full w-full object-cover"
                 />
