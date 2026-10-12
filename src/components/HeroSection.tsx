@@ -120,6 +120,8 @@ export default function HeroSection() {
             );
 
             if (ringStorySection && ringCanvasRef.current) {
+                const isMobile = window.innerWidth < 640;
+
                 const tl = gsap.timeline({
                     scrollTrigger: {
                         trigger: ringStorySection,
@@ -131,18 +133,15 @@ export default function HeroSection() {
                 });
 
                 // Phase 1 (0 -> 100): Transition from Hero to RingStory
-                // - Moves canvas from right-offset hero position to centered callout position
-                // - 3D model scales down by 20% (to 0.8)
-                // - 3D model performs a smooth 360-degree rotation showcase with a subtle angle tilt
                 tl.fromTo(
                     ringCanvasRef.current,
                     {
-                        x: () => (window.innerWidth < 640 ? 40 : 80),
+                        x: () => (window.innerWidth < 640 ? 0 : window.innerWidth < 1024 ? 40 : 80),
                         y: 0,
                     },
                     {
                         x: 0,
-                        y: -18,
+                        y: isMobile ? -10 : -18,
                         ease: "power1.inOut",
                         duration: 100,
                     },
@@ -162,13 +161,8 @@ export default function HeroSection() {
                     0
                 );
 
-                // Phase 2 (100 -> 170): RingStory section sticky hold (70svh)
-                // The ring stays securely pinned in the 2nd section between the callouts.
-                // No movement occurs here; ring holds its centered 20% smaller placed position.
-
-                // Phase 3 (170 -> 270): Exit when Section 2 scrolls away (100svh)
-                // Ring moves upwards in lockstep with Section 2, staying pinned to Section 2 rather than
-                // moving further down into subsequent sections, and NEVER disappearing!
+                // Phase 2 (100 -> 170): RingStory section sticky hold
+                // Phase 3 (170 -> 270): Exit lockstep with Section 2
                 tl.to(
                     ringCanvasRef.current,
                     {
@@ -188,29 +182,45 @@ export default function HeroSection() {
         <section
             id="hero"
             ref={sectionRef}
-            className="relative z-30 min-h-[760px] bg-[#f4f3ee] text-[#141414] lg:min-h-[100svh]"
+            className="relative z-30 min-h-screen bg-[#f4f3ee] text-[#141414]"
         >
-            <div className="relative mx-auto min-h-[760px] max-w-[1800px] px-6 pb-8 pt-24 sm:px-9 lg:min-h-[100svh] lg:px-12 lg:pt-24">
-                <div className="absolute inset-x-0 bottom-0 z-0 h-[21%] bg-white" />
-                <div className="pointer-events-none absolute inset-x-0 top-[14%] z-0 select-none">
-                    <div className="overflow-hidden pb-3">
+            <div className="relative mx-auto min-h-screen max-w-[1800px] px-5 pb-8 pt-20 sm:px-9 sm:pt-24 lg:px-12 lg:pt-24">
+
+                {/* White bottom strip — only on desktop */}
+                <div className="absolute inset-x-0 bottom-0 z-0 hidden h-[21%] bg-white lg:block" />
+
+                {/* ─── BIG DISPLAY TYPOGRAPHY ─── */}
+                <div className="pointer-events-none absolute inset-x-0 z-0 select-none
+                    top-[10%]
+                    sm:top-[14%]"
+                >
+                    {/* "Aurelia" — always visible, scales from 26vw on phone to 18vw on desktop */}
+                    <div className="overflow-hidden pb-2 sm:pb-3">
                         <h1
                             data-hero-title
-                            className="whitespace-nowrap text-[21vw] font-medium leading-[0.72] tracking-[-0.105em] will-change-transform lg:text-[18vw]"
+                            className="whitespace-nowrap font-medium leading-[0.72] will-change-transform
+                                tracking-[-0.09em] text-[26vw]
+                                sm:tracking-[-0.105em] sm:text-[21vw]
+                                lg:text-[18vw]"
                         >
                             Aurelia
                         </h1>
                     </div>
-                    <div className="overflow-hidden pb-3">
+                    {/* "atelier" — always visible */}
+                    <div className="overflow-hidden pb-2 sm:pb-3">
                         <p
                             data-hero-subtitle
-                            className="mt-[13vh] text-right text-[17vw] font-medium leading-[0.72] tracking-[-0.105em] will-change-transform lg:mt-[7vh] lg:text-[14vw]"
+                            className="text-right font-medium leading-[0.72] will-change-transform
+                                tracking-[-0.09em] text-[21vw]
+                                mt-[7vh] sm:mt-[13vh] sm:tracking-[-0.105em] sm:text-[17vw]
+                                lg:mt-[7vh] lg:text-[14vw]"
                         >
                             atelier
                         </p>
                     </div>
                 </div>
 
+                {/* ─── ACCENT IMAGES (hidden on mobile) ─── */}
                 <div className="absolute right-[5%] top-[16%] z-10 hidden w-[15%] max-w-[220px] overflow-hidden sm:block">
                     <img
                         src={accentImage}
@@ -220,7 +230,7 @@ export default function HeroSection() {
                     />
                 </div>
 
-                <div className="absolute bottom-[19%] left-[5%] z-10 hidden w-[14%] max-w-[190px] overflow-hidden sm:block">
+                <div className="absolute bottom-[19%] left-[5%] z-10 hidden w-[14%] max-w-[190px] overflow-hidden sm:block lg:block">
                     <img
                         src={detailImage}
                         alt="Gold jewellery detail"
@@ -229,9 +239,20 @@ export default function HeroSection() {
                     />
                 </div>
 
+                {/* ─── RING 3D CANVAS ───
+                    Mobile  : centered, narrow, lower on page so "Aurelia/atelier" text shows cleanly above
+                    Tablet  : left-offset like desktop but slightly less
+                    Desktop : original fixed positioning
+                */}
                 <div
                     ref={ringCanvasRef}
-                    className="pointer-events-none fixed left-[28%] top-[17vh] z-20 h-[71vh] w-[52vw] sm:left-[27%] sm:w-[48vw] lg:top-[14vh] lg:h-[83vh] lg:w-[46vw]"
+                    className="pointer-events-none fixed z-20
+                        /* mobile */
+                        left-[5%] top-[28vh] h-[44vh] w-[90vw]
+                        /* sm / tablet */
+                        sm:left-[25%] sm:top-[17vh] sm:h-[68vh] sm:w-[52vw]
+                        /* lg / desktop */
+                        lg:left-[28%] lg:top-[14vh] lg:h-[83vh] lg:w-[46vw]"
                 >
                     <Canvas
                         camera={{ position: [0, 0, 29], fov: 40 }}
@@ -248,6 +269,7 @@ export default function HeroSection() {
                     </Canvas>
                 </div>
 
+                {/* ─── SIDE COPY (hidden on mobile) ─── */}
                 <p data-hero-reveal className="absolute left-[5%] top-[46%] z-30 hidden max-w-28 text-[9px] uppercase leading-[1.45] tracking-[0.12em] text-black/60 sm:block">
                     Jewellery that becomes part of your story
                 </p>
@@ -264,9 +286,12 @@ export default function HeroSection() {
                     Each piece reflects the quiet elegance of modern luxury.
                 </p>
 
-                <div className="absolute bottom-8 left-6 right-6 z-30 flex items-end justify-between sm:left-9 sm:right-9 lg:bottom-12 lg:left-12 lg:right-12">
+                {/* ─── BOTTOM BAR ─── */}
+                <div className="absolute bottom-6 left-5 right-5 z-30 flex items-end justify-between sm:bottom-8 sm:left-9 sm:right-9 lg:bottom-12 lg:left-12 lg:right-12">
+
+                    {/* Mobile only CTA */}
                     <div data-hero-reveal className="sm:hidden">
-                        <p className="mb-2 text-[9px] uppercase tracking-[0.16em] text-black/55">
+                        <p className="mb-2 text-[9px] uppercase tracking-[0.16em] text-black/50">
                             Fine jewellery, made to last
                         </p>
                         <a
@@ -276,9 +301,13 @@ export default function HeroSection() {
                             Explore collection <ArrowUpRight size={13} />
                         </a>
                     </div>
+
+                    {/* Desktop left label */}
                     <span className="hidden text-[9px] uppercase tracking-[0.12em] text-black/55 sm:block">
                         VVS / 01
                     </span>
+
+                    {/* Attribution — hidden on mobile */}
                     <span className="absolute bottom-3 left-0 hidden text-[7px] text-black/40 sm:block">
                         <a
                             href="https://sketchfab.com/3d-models/ring-02-21060700d6454147849f33d1d1d740d0"
@@ -286,7 +315,7 @@ export default function HeroSection() {
                             rel="noreferrer"
                             className="transition-colors hover:text-black/70"
                         >
-                            “Ring 02”
+                            "Ring 02"
                         </a>{" "}
                         by{" "}
                         <a
@@ -307,12 +336,16 @@ export default function HeroSection() {
                             CC BY 4.0
                         </a>
                     </span>
+
+                    {/* Desktop right CTA */}
                     <a
                         href="#collection"
                         className="hidden items-center gap-2 border-b border-black/40 pb-1 text-[9px] uppercase tracking-[0.12em] transition-colors hover:border-black sm:inline-flex"
                     >
                         Explore collection <ArrowUpRight size={13} />
                     </a>
+
+                    {/* Mobile scroll nudge */}
                     <a
                         href="#intro"
                         aria-label="Scroll to discover"

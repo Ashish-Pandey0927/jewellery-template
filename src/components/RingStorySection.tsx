@@ -74,7 +74,7 @@ export default function RingStorySection() {
                 }
             );
 
-            // Callout numbers scale down from 1.3
+            // Callout numbers scale down from 1.4
             gsap.fromTo(
                 ".callout-num",
                 { scale: 1.4, opacity: 0 },
@@ -101,16 +101,33 @@ export default function RingStorySection() {
             id="ring-story"
             ref={sectionRef}
             aria-labelledby="ring-story-title"
-            className="relative z-20 min-h-[170svh] bg-[#f4f3ee] text-[#171614]"
+            className="relative z-20 bg-[#f4f3ee] text-[#171614]
+                min-h-[250svh]
+                sm:min-h-[210svh]
+                md:min-h-[170svh]"
         >
             <div className="sticky top-0 flex min-h-[100svh] items-center overflow-hidden">
-                <div id="ring-story-header" className="absolute left-6 right-6 top-[12%] z-10 text-center sm:left-10 sm:right-10 lg:top-[10%]">
-                    <TrackingExpand className="mb-4 text-[9px] uppercase tracking-[0.35em] text-[#927846]" threshold="top 80%">
+
+                {/* ─── SECTION HEADER (centred at top) ─── */}
+                <div
+                    id="ring-story-header"
+                    className="absolute z-10 text-center
+                        left-4 right-4 top-[6%]
+                        sm:left-10 sm:right-10 sm:top-[10%]
+                        lg:top-[10%]"
+                >
+                    <TrackingExpand
+                        className="mb-3 text-[9px] uppercase tracking-[0.35em] text-[#927846] sm:mb-4"
+                        threshold="top 80%"
+                    >
                         From material to heirloom
                     </TrackingExpand>
+
                     <h2
                         id="ring-story-title"
-                        className="font-serif text-4xl font-light leading-tight sm:text-5xl lg:text-6xl perspective-[1000px]"
+                        className="font-serif font-light leading-tight perspective-[1000px]
+                            text-3xl
+                            sm:text-4xl md:text-5xl lg:text-6xl"
                     >
                         <span className="inline-block overflow-hidden align-top mr-2 pb-[0.1em]">
                             <span className="ring-title-word inline-block will-change-transform">Made</span>
@@ -118,19 +135,24 @@ export default function RingStorySection() {
                         <span className="inline-block overflow-hidden align-top mr-2 pb-[0.1em]">
                             <span className="ring-title-word inline-block will-change-transform">to</span>
                         </span>
-                        <span className="inline-block overflow-hidden align-top mr-3 pb-[0.1em]">
+                        <span className="inline-block overflow-hidden align-top mr-2 pb-[0.1em] sm:mr-3">
                             <span className="ring-title-word inline-block will-change-transform">be</span>
                         </span>
                         <span className="inline-block overflow-hidden align-top pb-[0.1em]">
                             <span className="ring-title-word italic text-[#a88b4d] gold-shimmer-text inline-block will-change-transform">kept.</span>
                         </span>
                     </h2>
-                    <FadeUp className="mx-auto mt-4 max-w-md text-xs leading-6 text-black/55 sm:text-sm" delay={0.25} threshold="top 80%">
-                        A closer look at the materials and considered craft behind a
-                        piece of fine jewellery.
+
+                    <FadeUp
+                        className="mx-auto mt-3 max-w-xs text-xs leading-6 text-black/55 sm:mt-4 sm:max-w-md sm:text-sm"
+                        delay={0.25}
+                        threshold="top 80%"
+                    >
+                        A closer look at the materials and considered craft behind a piece of fine jewellery.
                     </FadeUp>
                 </div>
 
+                {/* ─── SVG CALLOUT LINES (tablet/desktop only) ─── */}
                 <svg
                     aria-hidden="true"
                     className="pointer-events-none absolute inset-0 hidden h-full w-full md:block"
@@ -164,10 +186,11 @@ export default function RingStorySection() {
                     </g>
                 </svg>
 
+                {/* ─── CALLOUT ARTICLES (tablet/desktop absolute layout) ─── */}
                 {callouts.map((callout) => (
                     <article
                         key={callout.number}
-                        className={`callout-item absolute z-10 hidden w-[19%] max-w-[240px] md:block will-change-transform ${callout.className}`}
+                        className={`callout-item absolute z-10 hidden w-[19%] max-w-[240px] will-change-transform md:block ${callout.className}`}
                     >
                         <p className="callout-num mb-3 text-[9px] tracking-[0.2em] text-[#a88b4d] origin-left">
                             {callout.number}
@@ -181,20 +204,27 @@ export default function RingStorySection() {
                     </article>
                 ))}
 
-                <div className="absolute bottom-[7%] left-6 right-6 z-10 grid grid-cols-2 gap-x-5 gap-y-4 md:hidden">
+                {/* ─── MOBILE / SMALL-TABLET CALLOUT GRID ───
+                    Shown below the ring (which is positioned by Hero's GSAP in this scroll range).
+                    We push it down with a top-% so it sits below the 3D ring on smaller screens.
+                */}
+                <div className="absolute left-4 right-4 z-10 grid grid-cols-2 gap-x-4 gap-y-5 md:hidden
+                    bottom-[4%]
+                    sm:bottom-[5%] sm:left-8 sm:right-8">
                     {callouts.map((callout) => (
                         <article key={callout.number} className="callout-item border-t border-black/15 pt-3">
                             <p className="callout-num mb-1 text-[8px] tracking-[0.18em] text-[#a88b4d]">
                                 {callout.number}
                             </p>
-                            <h3 className="font-serif text-lg">{callout.title}</h3>
-                            <p className="mt-1 text-[9px] leading-4 text-black/55">
+                            <h3 className="font-serif text-base sm:text-lg">{callout.title}</h3>
+                            <p className="mt-1 text-[9px] leading-[1.5] text-black/55">
                                 {callout.copy}
                             </p>
                         </article>
                     ))}
                 </div>
 
+                {/* Scroll hint — desktop only */}
                 <p className="absolute bottom-[2.5%] left-1/2 z-10 hidden -translate-x-1/2 text-[8px] uppercase tracking-[0.2em] text-black/40 md:block">
                     Scroll to explore the details
                 </p>
