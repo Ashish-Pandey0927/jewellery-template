@@ -1,0 +1,11 @@
+Model Information:
+* title:	Ring 02
+* source:	https://sketchfab.com/3d-models/ring-02-21060700d6454147849f33d1d1d740d0
+* author:	Busanello (https://sketchfab.com/busanello)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Ring 02" (https://sketchfab.com/3d-models/ring-02-21060700d6454147849f33d1d1d740d0) by Busanello (https://sketchfab.com/busanello) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

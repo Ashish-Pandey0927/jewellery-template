@@ -53,3 +53,43 @@ body {
 .font-serif {
     font-family: "Cormorant Garamond", serif;
 }
+
+@keyframes goldShimmer {
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+.gold-shimmer-text {
+    background: linear-gradient(
+        90deg,
+        #a88b4d 0%,
+        #f5e5be 30%,
+        #c8a96b 50%,
+        #f5e5be 70%,
+        #a88b4d 100%
+    );
+    background-size: 200% auto;
+    color: transparent;
+    -webkit-background-clip: text;
+    background-clip: text;
+    animation: goldShimmer 7s ease-in-out infinite;
+}
+
+@keyframes slowPulse {
+    0%, 100% {
+        opacity: 0.6;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.08);
+    }
+}
+
+.slow-pulse {
+    animation: slowPulse 4s ease-in-out infinite;
+}

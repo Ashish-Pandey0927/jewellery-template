@@ -29,16 +29,16 @@ export default function ProductCard({
 
             <div className="mt-5 flex items-start justify-between lg:mt-6">
                 <div>
-                    <p className="mb-1 text-[9px] uppercase tracking-[0.25em] text-neutral-500 lg:text-[10px]">
+                    <p className="mb-1 text-[9px] uppercase tracking-[0.25em] text-neutral-500 transition-colors duration-300 group-hover:text-[#927846] lg:text-[10px]">
                         {category}
                     </p>
 
-                    <h3 className="font-serif text-xl text-[#171614] lg:text-2xl">
+                    <h3 className="font-serif text-xl text-[#171614] transition-all duration-300 group-hover:translate-x-1 lg:text-2xl">
                         {name}
                     </h3>
                 </div>
 
-                <p className="text-sm text-neutral-600 lg:text-base">
+                <p className="text-sm text-neutral-600 transition-colors duration-300 group-hover:text-[#171614] lg:text-base font-medium">
                     {price}
                 </p>
             </div>

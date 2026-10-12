@@ -4,7 +4,6 @@ import {
     ShoppingBag,
     Menu,
     X,
-    UserRound,
 } from "lucide-react";
 
 export default function Navbar() {
@@ -12,70 +11,46 @@ export default function Navbar() {
 
     return (
         <>
-            <nav className="fixed top-0 left-0 z-50 w-full border-b border-white/10 bg-black/20 backdrop-blur-xl">
-                <div className="mx-auto flex h-24 max-w-[1500px] items-center justify-between px-6 md:px-10 lg:px-16 xl:px-24">
-
-                    {/* Logo */}
-                    <div className="flex items-center gap-3">
-                        <div className="h-9 w-9 rounded-full border border-[#c9aa6a] flex items-center justify-center">
-                            <span className="font-serif text-[#d8bc7d]">
-                                A
-                            </span>
-                        </div>
-
-                        <div>
-                            <h1 className="font-serif text-xl tracking-[0.25em] text-white">
-                                AURELIA
-                            </h1>
-
-                            <p className="text-[7px] tracking-[0.45em] text-white/50">
-                                FINE JEWELLERY
-                            </p>
-                        </div>
-                    </div>
+            <nav className="absolute left-0 top-0 z-50 w-full text-[#242321]">
+                <div className="mx-auto flex h-16 max-w-[1800px] items-center justify-between px-6 sm:px-9 lg:px-12">
+                    <span className="text-[10px] tracking-[0.04em] text-black/65">
+                        Est. 2020
+                    </span>
 
                     {/* Desktop Navigation */}
-                    <div className="hidden items-center gap-8 md:flex lg:gap-12 xl:gap-16">
+                    <div className="hidden items-center gap-8 md:flex">
                         {[
-                            "Collections",
-                            "New Arrivals",
-                            "Bridal",
-                            "The House",
-                            "Journal",
-                        ].map((item) => (
+                            { label: "Collections", href: "#collection" },
+                            { label: "About", href: "#intro" },
+                            { label: "Contacts", href: "#newsletter" },
+                        ].map(({ label, href }) => (
                             <a
-                                key={item}
-                                href="#"
-                                className="text-[11px] uppercase tracking-[0.2em] text-white/70 transition hover:text-[#d5b06a]"
+                                key={label}
+                                href={href}
+                                className="text-[10px] transition-colors hover:text-black/55"
                             >
-                                {item}
+                                {label}
                             </a>
                         ))}
                     </div>
 
                     {/* Actions */}
                     <div className="hidden items-center gap-5 md:flex">
-                        <button className="text-white/70 transition hover:text-[#d5b06a]">
-                            <Search size={18} strokeWidth={1.3} />
+                        <button className="flex items-center gap-2 text-[10px] transition-colors hover:text-black/55">
+                            Search
+                            <Search size={13} strokeWidth={1.4} />
                         </button>
-
-                        <button className="text-white/70 transition hover:text-[#d5b06a]">
-                            <UserRound size={18} strokeWidth={1.3} />
-                        </button>
-
-                        <button className="relative text-white/70 transition hover:text-[#d5b06a]">
-                            <ShoppingBag size={18} strokeWidth={1.3} />
-
-                            <span className="absolute -right-2 -top-2 flex h-4 w-4 items-center justify-center rounded-full bg-[#d5b06a] text-[8px] text-black">
-                                0
-                            </span>
+                        <button className="flex items-center gap-2 text-[10px] transition-colors hover:text-black/55">
+                            Cart
+                            <ShoppingBag size={13} strokeWidth={1.4} />
                         </button>
                     </div>
 
                     {/* Mobile */}
                     <button
                         onClick={() => setOpen(!open)}
-                        className="text-white md:hidden"
+                        aria-label={open ? "Close menu" : "Open menu"}
+                        className="text-black md:hidden"
                     >
                         {open ? <X /> : <Menu />}
                     </button>
@@ -84,22 +59,20 @@ export default function Navbar() {
 
             {/* Mobile menu */}
             {open && (
-                <div className="fixed inset-0 z-40 flex flex-col items-center justify-center bg-[#090909]">
+                <div className="fixed inset-0 z-40 flex flex-col items-center justify-center bg-[#f4f3ee] text-[#141414]">
                     <div className="flex flex-col items-center gap-8">
                         {[
-                            "Collections",
-                            "New Arrivals",
-                            "Bridal",
-                            "The House",
-                            "Journal",
-                        ].map((item) => (
+                            { label: "Collections", href: "#collection" },
+                            { label: "About", href: "#intro" },
+                            { label: "Contacts", href: "#newsletter" },
+                        ].map(({ label, href }) => (
                             <a
-                                key={item}
-                                href="#"
+                                key={label}
+                                href={href}
                                 onClick={() => setOpen(false)}
-                                className="font-serif text-3xl text-white"
+                                className="font-serif text-3xl"
                             >
-                                {item}
+                                {label}
                             </a>
                         ))}
                     </div>
